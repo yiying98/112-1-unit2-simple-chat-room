@@ -16,7 +16,7 @@ const SignInForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="border shadow-lg p-6 rounded-xl flex flex-col gap-4 w-1/3"
+      className="border shadow-lg p-6 rounded-xl flex flex-col gap-4 lg:w-1/3 md:w-1/2 w-2/3"
     >
       <div className="flex flex-col gap-1">
         <h1 className="text-xl font-bold">Sign In</h1>
