@@ -5,7 +5,7 @@ import { UserContext } from "@/context/user";
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 
-const ChatRoomInput = () => {
+function ChatRoomInput() {
   const { sendMessage } = useContext(MessagesContext);
   const { user } = useContext(UserContext);
   const [content, setContent] = useState<string>("");
@@ -37,6 +37,6 @@ const ChatRoomInput = () => {
       </button>
     </form>
   );
-};
+}
 
 export default ChatRoomInput;

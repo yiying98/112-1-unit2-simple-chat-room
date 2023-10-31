@@ -1,4 +1,4 @@
-import { User } from "@/lib/types/user";
+import type { User } from "@/lib/types/user";
 import React from "react";
 
 type Props = {
@@ -6,7 +6,7 @@ type Props = {
   classname?: string;
 };
 
-const Avatar = ({ displayId, classname }: Props) => {
+function Avatar({ displayId, classname }: Props) {
   return (
     <div
       className={`rounded-full flex items-center justify-center ${classname}`}
@@ -17,6 +17,6 @@ const Avatar = ({ displayId, classname }: Props) => {
       </span>
     </div>
   );
-};
+}
 
 export default Avatar;

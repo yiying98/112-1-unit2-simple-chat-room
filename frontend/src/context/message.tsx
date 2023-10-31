@@ -1,7 +1,8 @@
 "use client";
 import { createContext, useEffect, useState } from "react";
-import { Message } from "@/lib/types/message";
-import { Socket, connect } from "socket.io-client";
+import type { Message } from "@/lib/types/message";
+import type { Socket} from "socket.io-client";
+import { connect } from "socket.io-client";
 
 export type MessagesContext = {
   messages: Message[];
@@ -21,7 +22,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-export const MessagesProvider = ({ children }: Props) => {
+export function MessagesProvider({ children }: Props) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [socket, setSocket] = useState<Socket | null>(null);
 
@@ -82,4 +83,4 @@ export const MessagesProvider = ({ children }: Props) => {
       {children}
     </MessagesContext.Provider>
   );
-};
+}

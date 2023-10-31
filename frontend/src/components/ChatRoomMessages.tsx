@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import React, { useContext } from "react";
 import Avatar from "./Avatar";
 
-const ChatRoomMessages = () => {
+function ChatRoomMessages() {
   const { messages } = useContext(MessagesContext);
   const { user } = useContext(UserContext);
   const router = useRouter();
@@ -44,6 +44,6 @@ const ChatRoomMessages = () => {
       })}
     </div>
   );
-};
+}
 
 export default ChatRoomMessages;

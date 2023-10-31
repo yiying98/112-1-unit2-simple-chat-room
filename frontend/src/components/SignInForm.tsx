@@ -3,7 +3,7 @@ import { UserContext } from "@/context/user";
 import { useRouter } from "next/navigation";
 import React, { useContext, useState } from "react";
 
-const SignInForm = () => {
+function SignInForm() {
   const { user, setUser } = useContext(UserContext);
   const [displayId, setDisplayId] = useState(user?.displayId ?? "");
   const router = useRouter();
@@ -51,6 +51,6 @@ const SignInForm = () => {
       </div>
     </form>
   );
-};
+}
 
 export default SignInForm;

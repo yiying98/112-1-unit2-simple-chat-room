@@ -5,12 +5,12 @@ type Props = {
   children: React.ReactNode;
 };
 
-const Providers = ({ children }: Props) => {
+function Providers({ children }: Props) {
   return (
     <>
       <UserProvider>{children}</UserProvider>
     </>
   );
-};
+}
 
 export default Providers;

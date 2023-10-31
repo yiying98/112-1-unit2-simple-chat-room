@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useState } from "react";
-import { User } from "@/lib/types/user";
+import type { User } from "@/lib/types/user";
 
 export type UserContext = {
   user: User | null;
@@ -15,11 +15,11 @@ export const UserContext = createContext<UserContext>({
 type Props = {
   children: React.ReactNode;
 };
-export const UserProvider = ({ children }: Props) => {
+export function UserProvider({ children }: Props) {
   const [user, setUser] = useState<User | null>(null);
   return (
     <UserContext.Provider value={{ user, setUser }}>
       {children}
     </UserContext.Provider>
   );
-};
+}
