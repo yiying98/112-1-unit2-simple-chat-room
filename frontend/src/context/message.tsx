@@ -1,8 +1,8 @@
 "use client";
 import { createContext, useEffect, useState } from "react";
 import type { Message } from "@/lib/types/message";
-import type { Socket} from "socket.io-client";
-import { connect } from "socket.io-client";
+import type { Socket } from "socket.io-client";
+import { io } from "socket.io-client";
 
 export type MessagesContext = {
   messages: Message[];
@@ -28,13 +28,10 @@ export function MessagesProvider({ children }: Props) {
 
   useEffect(() => {
     const initSocket = () => {
-      const socket = connect(process.env.NEXT_PUBLIC_SOCKET_URL as string);
+      const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL as string);
       socket.on("receive_message", (newMessage: Message) => {
         console.log("new message");
         setMessages((messages) => [...messages, newMessage]);
-      });
-      socket.on("new_connection", () => {
-        console.log("new connection");
       });
       setSocket(socket);
     };

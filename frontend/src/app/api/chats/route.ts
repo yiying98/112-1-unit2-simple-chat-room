@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { db } from "@/app/db";
+import { db } from "@/db";
 import type { Message } from "@/lib/types/message";
 
 const postMessageSchema = z.object({
