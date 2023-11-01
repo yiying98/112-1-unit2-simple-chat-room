@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useState } from "react";
-import type { User } from "@/lib/types/user";
+import type { User } from "@/package/types/user";
 
 export type UserContext = {
   user: User | null;

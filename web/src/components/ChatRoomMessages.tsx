@@ -2,7 +2,7 @@
 import { MessagesContext } from "@/context/message";
 import { UserContext } from "@/context/user";
 import { useRouter } from "next/navigation";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import Avatar from "./Avatar";
 
 function ChatRoomMessages() {
@@ -10,9 +10,12 @@ function ChatRoomMessages() {
   const { user } = useContext(UserContext);
   const router = useRouter();
 
-  if (!user) {
-    router.push("/");
-  }
+  useEffect(() => {
+    if (!user) {
+      router.push("/");
+      return;
+    }
+  }, [user, router]);
 
   return (
     <div className="px-2 pt-4">

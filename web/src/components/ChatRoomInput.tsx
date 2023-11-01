@@ -3,20 +3,24 @@
 import { MessagesContext } from "@/context/message";
 import { UserContext } from "@/context/user";
 import { useRouter } from "next/navigation";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 function ChatRoomInput() {
   const { sendMessage } = useContext(MessagesContext);
   const { user } = useContext(UserContext);
   const [content, setContent] = useState<string>("");
   const router = useRouter();
-  if (!user) {
-    router.push("/");
-    return;
-  }
+  useEffect(() => {
+    if (!user) {
+      router.push("/");
+      return;
+    }
+  }, [user, router]);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!content) return;
+    if (!user) return;
     sendMessage({ content, senderId: user.displayId });
     setContent("");
   };

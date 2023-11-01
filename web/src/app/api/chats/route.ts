@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/db";
-import type { Message } from "@/lib/types/message";
+import type { Message } from "@/package/types/message";
 
 const postMessageSchema = z.object({
   content: z.string().min(1).max(500),

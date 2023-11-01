@@ -4,7 +4,7 @@ import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
 
-import { Message } from "@lib/types/message";
+import { Message } from "@/package/types/message";
 
 dotenv.config();
 
