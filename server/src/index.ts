@@ -5,6 +5,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 
 import { Message } from "@/package/types/message";
+import { User } from "@/package/types/user";
 
 dotenv.config();
 
@@ -28,6 +29,9 @@ io.on("connection", (socket) => {
   // User has sent a message
   socket.on("send_message", (newMessage: Message) => {
     io.emit("receive_message", newMessage);
+  });
+  socket.on("send_user",(newUser:User)=>{
+    io.emit("receive_user", newUser)
   });
 });
 

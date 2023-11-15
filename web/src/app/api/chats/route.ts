@@ -25,12 +25,13 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
-  const { content, senderId } = data as PostMessageRequest;
+  const { content, senderId , receiverId } = data as PostMessageRequest;
   const timestamp = new Date();
   const newMessage: Message = {
     content,
     senderId,
-    timestamp,
+    receiverId,
+    timestamp
   };
   db.messages.push(newMessage);
   return NextResponse.json(

@@ -1,4 +1,6 @@
 import type { Message } from "@/package/types/message";
-export const db: { messages: Message[] } = {
+import type { User } from "@/package/types/user"
+export const db: { messages: Message[], users:User[] } = {
   messages: [],
+  users:[]
 };

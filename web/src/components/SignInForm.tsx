@@ -4,13 +4,14 @@ import { useRouter } from "next/navigation";
 import React, { useContext, useState } from "react";
 
 function SignInForm() {
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, sendUser } = useContext(UserContext);
   const [displayId, setDisplayId] = useState(user?.displayId ?? "");
   const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setUser({ displayId });
+    sendUser({displayId:displayId})
     router.push("/chat");
   };
   return (

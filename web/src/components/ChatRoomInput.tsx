@@ -7,7 +7,7 @@ import { useContext, useEffect, useState } from "react";
 
 function ChatRoomInput() {
   const { sendMessage } = useContext(MessagesContext);
-  const { user } = useContext(UserContext);
+  const { user, receiver } = useContext(UserContext);
   const [content, setContent] = useState<string>("");
   const router = useRouter();
   useEffect(() => {
@@ -21,7 +21,8 @@ function ChatRoomInput() {
     e.preventDefault();
     if (!content) return;
     if (!user) return;
-    sendMessage({ content, senderId: user.displayId });
+    if (!receiver) return;
+    sendMessage({ content, senderId: user.displayId, receiverId: receiver.displayId });
     setContent("");
   };
   return (
@@ -35,7 +36,8 @@ function ChatRoomInput() {
       />
       <button
         type="submit"
-        className="bg-black text-white py-1 px-2 rounded-lg text-sm hover:bg-gray-700 transition duration-200 ease-in-out"
+        className="bg-black text-white py-1 px-2 rounded-lg text-sm enabled:hover:bg-gray-700 transition duration-200 ease-in-out disabled:opacity-25"
+        disabled={!receiver}
       >
         Send
       </button>
