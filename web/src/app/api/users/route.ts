@@ -12,7 +12,7 @@ type PostUserRequest = z.infer<typeof postUserSchema>;
 export async function GET() {
     return NextResponse.json(
       {
-        users: db.user,
+        users: db.users,
       },
       { status: 200 },
     );
