@@ -2,6 +2,7 @@
 import { MessagesContext } from "@/context/message";
 import { UserContext } from "@/context/user";
 import type { User } from "@/package/types/user";
+import type { Message } from "@/package/types/message";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -15,14 +16,39 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import Avatar from "./Avatar";
 import { PlusSquare } from 'lucide-react';
-
+import { db } from "@/db";
+import { messagesTable, talksTable, usersTable} from "@/db/schema";
+import { eq, desc, isNull, sql, and, or } from "drizzle-orm";
 function PreviewSection(){
-    const { user, sendUser, userlist, receiver,setReceiver } = useContext(UserContext);
+    const { user, sendUser, userlist, receiver,setReceiver} = useContext(UserContext);
     const [formOpen, setformOpen] = useState(false);
     const [newUserId, setNewUserId] = useState(receiver?.displayId ?? "");
     const { messages } = useContext(MessagesContext);
-    function handleClick(userfetched:User){
-      setReceiver(userfetched);
+    const talkedSubquery = db.$with("talked").as(db.select({
+      user1:talksTable.user1,
+      user2:talksTable.user2,
+      lastUpdate:talksTable.lastUpdate,
+      talked:sql<number>`1`.mapWith(Boolean).as("talked"),
+    }).from(talksTable).where(or(eq(talksTable.user1, user?.displayId),eq(talksTable.user1, user?.displayId))));
+    const talkedDialog = await db
+    .with(talkedSubquery)
+    .select({
+      displayId:usersTable.displayId,
+      talked:talkedSubquery.talked,
+    })
+    .from(usersTable)
+    .orderBy(desc(talkedSubquery.lastUpdate))
+    .rightjoin(talkedSubquery,or(eq(usersTable.displayId,talkedSubquery.user1),eq(usersTable.displayId,talkedSubquery.user2)));
+
+    function handleClick(message:Message){
+      if(message.senderId===user?.displayId){
+        setReceiver({displayId:message.receiverId});
+      }
+      else
+      {
+        setReceiver({displayId:message.senderId});
+      }
+      
     }
     function handleAdd() {
       setformOpen(true);
@@ -41,7 +67,7 @@ function PreviewSection(){
     )
     return (
       <div>
-        <Dialog open={formOpen}>
+        <Dialog open={formOpen} onOpenChange={setformOpen}>
         <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add new dialog</DialogTitle>
@@ -76,28 +102,34 @@ function PreviewSection(){
             </div>
         </button>
         <div className="px-2 pt-4">
-          {userlist?.map((userfetched, index) => {
-            const isSame = userfetched.displayId === user?.displayId;
-            const isReceiver = userfetched.displayId === receiver?.displayId;
+          {messages?.map((message, index) => {
+            const isSender = message.senderId === user?.displayId;
+            const isReceiver = message.receiverId === user?.displayId;
+            if(isSender|| isReceiver)
+            {
             return (
               <div key={index} className={`w-full pt-1 flex flex-row ${
                 isReceiver && "bg-slate-100"
-              }`} onClick={()=>handleClick(userfetched)}>
-                  {!isSame && (
+              }`} onClick={()=>handleClick(message)}>
                     <Avatar
-                      displayId={userfetched.displayId}
+                      displayId={isSender? message.receiverId : message.senderId}
                       classname="bg-black text-white w-8 h-8"
                     />
-                  )}
-                  {!isSame && (
+                    <div className="flex flex-col">
                     <div
                         className={`max-w-[60%] rounded-2xl px-3 py-1 leading-6 text-black`}
                     >
-                      {userfetched.displayId}
+                      {isSender? message.receiverId : message.senderId}
                     </div>
-                  )}
+                    <div
+                        className={`max-w-[60%] rounded-2xl px-3 py-1 leading-6 text-black`}
+                    >
+                      {message.content}
+                    </div>
+                    </div>
                 </div>
             );
+          }
           })}
         </div>
         </div>
