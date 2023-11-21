@@ -12,7 +12,7 @@ type PostUserRequest = z.infer<typeof postUserSchema>;
 export async function GET() {
   const users =  await db
       .select(
-        {senderId: usersTable.senderId}
+        {senderId: usersTable.displayId}
       )
       .from(usersTable)
       .execute()
@@ -35,7 +35,7 @@ const { displayId } = data as PostUserRequest;
 const newUser: User = {
     displayId,
 };
-db.users.push(newUser);
+
 try {
   await db
     .insert(usersTable)

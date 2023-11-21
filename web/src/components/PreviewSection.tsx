@@ -19,27 +19,27 @@ import { PlusSquare } from 'lucide-react';
 import { db } from "@/db";
 import { messagesTable, talksTable, usersTable} from "@/db/schema";
 import { eq, desc, isNull, sql, and, or } from "drizzle-orm";
-function PreviewSection(){
+async function PreviewSection(){
+    
     const { user, sendUser, userlist, receiver,setReceiver} = useContext(UserContext);
     const [formOpen, setformOpen] = useState(false);
     const [newUserId, setNewUserId] = useState(receiver?.displayId ?? "");
     const { messages } = useContext(MessagesContext);
-    const talkedSubquery = db.$with("talked").as(db.select({
+    if(!user) return(
+      <div className="px-2 pt-4"/>
+    )
+
+    const talks = await db.select({
       user1:talksTable.user1,
       user2:talksTable.user2,
       lastUpdate:talksTable.lastUpdate,
-      talked:sql<number>`1`.mapWith(Boolean).as("talked"),
-    }).from(talksTable).where(or(eq(talksTable.user1, user?.displayId),eq(talksTable.user1, user?.displayId))));
-    const talkedDialog = await db
-    .with(talkedSubquery)
-    .select({
-      displayId:usersTable.displayId,
-      talked:talkedSubquery.talked,
-    })
-    .from(usersTable)
-    .orderBy(desc(talkedSubquery.lastUpdate))
-    .rightjoin(talkedSubquery,or(eq(usersTable.displayId,talkedSubquery.user1),eq(usersTable.displayId,talkedSubquery.user2)));
-
+    }).from(talksTable)
+      .orderBy(desc(talksTable.lastUpdate))
+      .where(
+        or(
+            eq(talksTable.user1, user.displayId),
+            eq(talksTable.user2, user.displayId)));
+    
     function handleClick(message:Message){
       if(message.senderId===user?.displayId){
         setReceiver({displayId:message.receiverId});
@@ -62,9 +62,6 @@ function PreviewSection(){
     const handleHookChange = (func: Function) => (event: React.ChangeEvent<HTMLInputElement>) => {
       func(event.target.value);
       };
-    if(!user) return(
-        <div className="px-2 pt-4"/>
-    )
     return (
       <div>
         <Dialog open={formOpen} onOpenChange={setformOpen}>

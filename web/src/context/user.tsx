@@ -66,7 +66,6 @@ export function UserProvider({ children }: Props) {
       return;
     }
     try {
-      console.log("get user")
       console.log(JSON.stringify(userinput))
       const res = await fetch("/api/users", {
         method: "POST",

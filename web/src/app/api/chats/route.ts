@@ -3,12 +3,7 @@ import { z } from "zod";
 import { db } from "@/db";
 import type { Message } from "@/package/types/message";
 import { messagesTable } from "@/db/schema";
-import { eq, desc, sql, and, or } from "drizzle-orm";
-const getMessageSchema = z.object({
-  senderId: z.string().min(1).max(50),
-  receiverId: z.string().min(1).max(50),
-});
-type GetMessageRequest = z.infer<typeof getMessageSchema>;
+
 const postMessageSchema = z.object({
   content: z.string().min(1).max(500),
   senderId: z.string().min(1).max(50),
@@ -27,7 +22,7 @@ export async function GET() {
       .execute();
   return NextResponse.json(
     {
-      messages: db.messages,
+      messages: messages,
     },
     { status: 200 },
   );
@@ -52,10 +47,9 @@ export async function POST(request: NextRequest) {
     await db
       .insert(messagesTable)
       .values({
-        content: content,
+        content:content,
         senderId:senderId,
         receiverId:receiverId,
-        timestamp:timestamp,
       })
       .execute();
   } catch (error) {
