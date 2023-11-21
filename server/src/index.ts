@@ -6,6 +6,7 @@ import { Server } from "socket.io";
 
 import { Message } from "@/package/types/message";
 import { User } from "@/package/types/user";
+import { Talk } from "@/package/types/talk";
 
 dotenv.config();
 
@@ -32,6 +33,9 @@ io.on("connection", (socket) => {
   });
   socket.on("send_user",(newUser:User)=>{
     io.emit("receive_user", newUser)
+  });
+  socket.on("send_talk",(newTalk:Talk)=>{
+    io.emit("receive_talk", newTalk)
   });
 });
 

@@ -5,6 +5,7 @@ import type { Talk } from "@/package/types/talk";
 import { talksTable } from "@/db/schema";
 import { and, eq, sql, or,desc } from "drizzle-orm";
 
+
 const postTalkSchema = z.object({
     user1: z.string().min(1).max(50),
     user2:z.string().min(1).max(50),

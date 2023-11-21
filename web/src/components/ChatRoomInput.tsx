@@ -4,11 +4,13 @@ import { MessagesContext } from "@/context/message";
 import { UserContext } from "@/context/user";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
+import { TalkContext } from "@/context/talk";
 
 function ChatRoomInput() {
   const { sendMessage } = useContext(MessagesContext);
   const { user, receiver } = useContext(UserContext);
   const [content, setContent] = useState<string>("");
+  const {sendTalk} = useContext(TalkContext);
   const router = useRouter();
   useEffect(() => {
     if (!user) {
@@ -23,6 +25,10 @@ function ChatRoomInput() {
     if (!user) return;
     if (!receiver) return;
     sendMessage({ content, senderId: user.displayId, receiverId: receiver.displayId });
+    sendTalk({
+      user1:user.displayId,
+      user2:receiver.displayId,
+    })
     setContent("");
   };
   return (
