@@ -28,6 +28,7 @@ function ChatRoomInput() {
     sendTalk({
       user1:user.displayId,
       user2:receiver.displayId,
+      lastMessage:content,
     })
     setContent("");
   };

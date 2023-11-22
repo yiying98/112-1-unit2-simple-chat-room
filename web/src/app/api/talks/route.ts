@@ -4,11 +4,12 @@ import { db } from "@/db";
 import type { Talk } from "@/package/types/talk";
 import { talksTable } from "@/db/schema";
 import { and, eq, sql, or,desc } from "drizzle-orm";
-
+import { UserContext } from "@/context/user";
 
 const postTalkSchema = z.object({
     user1: z.string().min(1).max(50),
     user2:z.string().min(1).max(50),
+    lastMessage:z.string().max(280),
   });
 type postTalkRequest = z.infer<typeof postTalkSchema>;
 
@@ -17,13 +18,7 @@ const getTalkSchema = z.object({
   });
 type getTalkRequest = z.infer<typeof getTalkSchema>;
 
-export async function GET(request: NextRequest) {
-    const data = await request.json();
-  try {
-        getTalkSchema.parse(data);
-        } catch (error) {
-            return NextResponse.json({ error: "Invalid request" }, { status: 400 });
-        }
+export async function GET() {
     const talks = await db
         .select({
           user1: talksTable.user1,
@@ -31,9 +26,6 @@ export async function GET(request: NextRequest) {
           lastUpdate: talksTable.lastUpdate,
         })
         .from(talksTable)
-        .where(or
-            (eq(talksTable.user1,data.user1),
-             eq(talksTable.user2,data.user1)))
         .orderBy(desc(talksTable.lastUpdate))
         .execute();
     return NextResponse.json(
@@ -51,11 +43,12 @@ export async function GET(request: NextRequest) {
     } catch (error) {
       return NextResponse.json({ error: "Invalid request" }, { status: 400 });
     }
-    const { user1,user2} = data as postTalkRequest;
+    const { user1,user2,lastMessage} = data as postTalkRequest;
     const timestamp = new Date();
     const newTalk: Talk = {
       user1,
       user2,
+      lastMessage,
       timestamp
     };
     try {
@@ -64,12 +57,14 @@ export async function GET(request: NextRequest) {
         .values({
           user1:user1,
           user2:user2,
+          lastMessage:lastMessage,
         })
         .onConflictDoUpdate({
             target: [talksTable.user1,talksTable.user2],
             set: {
               user1: user1,
               user2: user2,
+              lastMessage:lastMessage,
               lastUpdate:timestamp,
             },
           })

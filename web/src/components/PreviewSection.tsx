@@ -1,7 +1,6 @@
 "use client";
 import { MessagesContext } from "@/context/message";
 import { UserContext } from "@/context/user";
-import { TalkContext } from "@/context/talk";
 import type { User } from "@/package/types/user";
 import type { Message } from "@/package/types/message";
 import type { Talk } from "@/package/types/talk";
@@ -24,10 +23,9 @@ import { eq, desc, isNull, sql, and, or } from "drizzle-orm";
 function PreviewSection(){
     
     const { user, sendUser, userlist, receiver,setReceiver} = useContext(UserContext);
-    const { talkList, sendTalk} = useContext(TalkContext);
     const [formOpen, setformOpen] = useState(false);
     const [newUserId, setNewUserId] = useState(receiver?.displayId ?? "");
-    const { messages } = useContext(MessagesContext);
+    const { messages, talkList, sendTalk } = useContext(MessagesContext);
     if(!user) return(
       <div className="px-2 pt-4"/>
     )
@@ -45,7 +43,8 @@ function PreviewSection(){
       console.log(newUserId);
       sendTalk({
         user1:user.displayId,
-        user2:newUserId
+        user2:newUserId,
+        lastMessage:"",
         })
       setformOpen(false);
     }
@@ -91,7 +90,7 @@ function PreviewSection(){
         </button>
         <div className="px-2 pt-4">
           {talkList?.map((talk, index) => {
-            const peer = talk.user1 === user?.displayId ? talk.user1:talk.user2;
+            const peer = talk.user1 === user?.displayId ? talk.user2:talk.user1;
             const isReceiver = peer===receiver?.displayId;
             return (
               <div key={index} className={`w-full pt-1 flex flex-row ${
@@ -110,7 +109,7 @@ function PreviewSection(){
                     <div
                         className={`max-w-[60%] rounded-2xl px-3 py-1 leading-6 text-black`}
                     >
-                      Default
+                      {talk.lastMessage}
                     </div>
                     </div>
                 </div>

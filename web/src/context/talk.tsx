@@ -23,7 +23,7 @@ type Props = {
 children: React.ReactNode;
 };
 
-export function UserProvider({ children }: Props) {
+export function TalkProvider({ children }: Props) {
     const {user} = useContext(UserContext);
     const [talkList, setTalkList]=useState<Talk[]>([]);
     const [socket, setSocket] = useState<Socket | null>(null);
@@ -37,6 +37,7 @@ export function UserProvider({ children }: Props) {
           setSocket(socket);
         };
         const fetchTalks = async () => {
+          console.log("fetchtalks");
           try {
             const res = await fetch("/api/talks", {
                 method: "GET",

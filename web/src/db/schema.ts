@@ -51,6 +51,7 @@ export const talksTable =pgTable(
         .notNull(),
         user2: varchar("user2", { length: 50 })
         .notNull(),
+        lastMessage:varchar("lastMessage", { length: 280 }).notNull(),
         lastUpdate: timestamp("created_at").default(sql`now()`),
     },
     (table) => ({
